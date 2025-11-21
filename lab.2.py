@@ -6,9 +6,9 @@ import csv, random, os, locale
 from xml.dom import minidom
 from collections import Counter
 
-CSV_FILE = 'books.csv'
-XML_FILE = 'currency.xml'
-REF_FILE = 'references.txt'
+CSV_FILE = r"C:\Users\zyp92\OneDrive\桌面\Python.py\books.csv"
+XML_FILE = r"C:\Users\zyp92\OneDrive\桌面\Python.py\currency.xml"
+REF_FILE = r"C:\Users\zyp92\OneDrive\桌面\Python.py\references.txt"
 locale.setlocale(locale.LC_ALL, 'ru_RU.UTF-8')
 
 # ----------- ① 书名长度>30 的统计 -----------
@@ -83,5 +83,3 @@ def task6():
     print('⑥ The 20 most popular books：')
     for title, c in cnt.most_common(20):
         print(f'   {title}  ({c} )')
-
-
