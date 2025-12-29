@@ -5,20 +5,23 @@ class GameCharacter:
         self.damage = damage
 
     def calculate_hits_until_exhaustion(self):
-        # 计算耐力耗尽前的攻击次数
-        print('Hellos')
-        return self.stamina  # 假设每次攻击消耗1点耐力
+        # 计算耐力耗尽前的攻击次数（每次攻击消耗1点耐力）
+        return self.stamina
 
     def __add__(self, other):
-        # 附加任务：重载加法运算符
+        # 重载加法运算符：合并两个相同类型的对象
         if type(self) != type(other):
             raise TypeError("不能对不同类型进行加法操作")
-        # 返回合并后的新对象
         return type(self)(
             self.health + other.health,
             self.stamina + other.stamina,
             self.damage + other.damage
         )
+
+    def calculate_hits_to_defeat(self, attacker_damage):
+        # 默认实现：计算击败此角色所需的攻击次数
+        import math
+        return math.ceil(self.health / attacker_damage)
 
 
 class WeakEnemy(GameCharacter):
@@ -27,8 +30,9 @@ class WeakEnemy(GameCharacter):
         self.special_field = special_field  # 独特字段
 
     def calculate_hits_to_defeat(self, attacker_damage):
-        # 计算击败弱敌人所需的攻击次数
-        return self.health // attacker_damage
+        # 弱敌人没有特殊防御，直接按血量除以伤害
+        import math
+        return math.ceil(self.health / attacker_damage)
 
 
 class Boss(GameCharacter):
@@ -37,10 +41,28 @@ class Boss(GameCharacter):
         self.boss_ability = boss_ability  # 独特字段
 
     def calculate_hits_to_defeat(self, attacker_damage):
-        # 计算击败BOSS所需的攻击次数，可能有特殊逻辑
-        return self.health // attacker_damage * 2  # 例如BOSS有减伤
+        # BOSS有减伤，例如：实际承受伤害为一半，所以需要两倍攻击次数
+        import math
+        return math.ceil(self.health / attacker_damage) * 2
 
 
-character = GameCharacter(10, 10, 20)
-res = character.calculate_hits_until_exhaustion()
-print(res)
+# 示例使用
+if __name__ == "__main__":
+    character = GameCharacter(10, 10, 20)
+    print("角色可攻击次数:", character.calculate_hits_until_exhaustion())  # 输出: 10
+
+    weak_enemy = WeakEnemy(50, 8, 10, "weakness")
+    boss = Boss(100, 15, 25, "regeneration")
+
+    print("击败弱敌人所需攻击次数:", weak_enemy.calculate_hits_to_defeat(10))  # 5
+    print("击败BOSS所需攻击次数:", boss.calculate_hits_to_defeat(10))         # 20
+
+    # 测试加法运算符
+    new_char = character + character
+    print("合并后角色属性:", new_char.health, new_char.stamina, new_char.damage)
+
+    # 尝试不同类相加会报错
+    try:
+        result = character + weak_enemy
+    except TypeError as e:
+        print("错误捕获:", e)
